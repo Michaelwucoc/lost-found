@@ -1,0 +1,55 @@
+/* 全局样式 */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+/* 卡片样式 */
+.card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 物品卡片样式 */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* 表单样式 */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* 按钮样式 */
+.btn {
+    border-radius: 4px;
+}
+
+/* 导航栏样式 */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 页脚样式 */
+footer {
+    margin-top: auto;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 150px;
+    }
+}

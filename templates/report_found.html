@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">报告找到物品</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name_cn" class="form-label">报告人中文姓名</label>
+                <input type="text" class="form-control" id="name_cn" name="name_cn" required>
+            </div>
+            <div class="mb-3">
+                <label for="name_en" class="form-label">报告人英文姓名</label>
+                <input type="text" class="form-control" id="name_en" name="name_en" required>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">找到地点</label>
+                <input type="text" class="form-control" id="location" name="location" required placeholder="建议放到失物招领处">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">物品描述</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                <div class="form-text">请提供物品描述或上传图片（至少一项）</div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">物品图片</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+            <div class="text-end">
+                <a href="{{ url_for('index') }}" class="btn btn-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

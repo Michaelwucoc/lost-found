@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">编辑物品</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name_cn" class="form-label">报告人中文姓名</label>
+                <input type="text" class="form-control" id="name_cn" name="name_cn" value="{{ item.name_cn }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="name_en" class="form-label">报告人英文姓名</label>
+                <input type="text" class="form-control" id="name_en" name="name_en" value="{{ item.name_en }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">{% if item.type == 'lost' %}丢失{% else %}找到{% endif %}地点</label>
+                <input type="text" class="form-control" id="location" name="location" value="{{ item.location }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">物品描述</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ item.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">物品图片</label>
+                {% if item.image %}
+                <div class="mb-2">
+                    <img src="{{ url_for('static', filename='uploads/' + item.image) }}" alt="当前图片" style="max-height: 200px;" class="img-thumbnail">
+                </div>
+                {% endif %}
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                <div class="form-text">上传新图片将替换当前图片</div>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="matched" name="matched" {% if item.matched %}checked{% endif %}>
+                <label class="form-check-label" for="matched">标记为已匹配</label>
+            </div>
+            <div class="text-end">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary me-2">返回</a>
+                <button type="submit" class="btn btn-primary">保存更改</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

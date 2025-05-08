@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">管理员面板</h5>
+        <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-light">登出</a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>类型</th>
+                        <th>报告人</th>
+                        <th>地点</th>
+                        <th>时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.id[:8] }}...</td>
+                        <td>
+                            {% if item.type == 'lost' %}
+                            <span class="badge bg-danger">丢失</span>
+                            {% else %}
+                            <span class="badge bg-success">找到</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.name_cn }} ({{ item.name_en }})</td>
+                        <td>{{ item.location }}</td>
+                        <td>{{ item.created_at[:16].replace('T', ' ') }}</td>
+                        <td>
+                            {% if item.matched %}
+                            <span class="badge bg-info">已匹配</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">未匹配</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-outline-primary">查看</a>
+                                <a href="{{ url_for('admin_edit', item_id=item.id) }}" class="btn btn-outline-secondary">编辑</a>
+                                <a href="{{ url_for('admin_delete', item_id=item.id) }}" class="btn btn-outline-danger" onclick="return confirm('确定要删除这个物品吗？');">删除</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

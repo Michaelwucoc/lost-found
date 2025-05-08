@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">潜在匹配物品</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <p>我们找到了一些可能与您{% if item_type == 'lost' %}丢失{% else %}找到{% endif %}的物品相匹配的记录。请查看以下列表，如果您认为其中有匹配的物品，请点击"确认匹配"按钮。</p>
+        </div>
+        
+        <div class="row">
+            {% for match in matches %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    {% if match.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + match.image) }}" class="card-img-top" alt="物品图片" style="height: 150px; object-fit: cover;">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                        <span class="text-muted">无图片</span>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{% if match.type == 'lost' %}丢失{% else %}找到{% endif %}地点: {{ match.location }}</h5>
+                        <p class="card-text">{{ match.description[:50] }}{% if match.description|length > 50 %}...{% endif %}</p>
+                        <p class="card-text"><small class="text-muted">报告人: {{ match.name_cn }} ({{ match.name_en }})</small></p>
+                        <p class="card-text"><small class="text-muted">时间: {{ match.created_at[:16].replace('T', ' ') }}</small></p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('item_detail', item_id=match.id) }}" class="btn btn-sm btn-secondary">查看详情</a>
+                            <a href="{{ url_for('confirm_match', item_id=item_id, matched_item_id=match.id) }}" class="btn btn-sm btn-success">确认匹配</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">没有匹配，返回首页</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

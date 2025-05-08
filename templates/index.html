@@ -1,0 +1,128 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<!-- 搜索表单 -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">搜索物品</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('search') }}" method="get" class="row g-3">
+            {% if search %}
+            <div class="col-12 mb-2">
+                <div class="alert alert-info">
+                    搜索结果: 找到 {{ lost_items|length + found_items|length }} 个物品
+                    <a href="{{ url_for('index') }}" class="float-end">清除筛选</a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="keyword" placeholder="输入姓名或物品描述关键词" value="{{ keyword if search else '' }}">
+            </div>
+            <div class="col-md-3">
+                <select name="type" class="form-select">
+                    <option value="all" {% if search and item_type == 'all' %}selected{% endif %}>所有类型</option>
+                    <option value="lost" {% if search and item_type == 'lost' %}selected{% endif %}>丢失物品</option>
+                    <option value="found" {% if search and item_type == 'found' %}selected{% endif %}>找到物品</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="all" {% if search and status == 'all' %}selected{% endif %}>所有状态</option>
+                    <option value="0" {% if search and status == '0' %}selected{% endif %}>未匹配</option>
+                    <option value="1" {% if search and status == '1' %}selected{% endif %}>已匹配</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">搜索</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">丢失物品</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-end mb-3">
+                    <a href="{{ url_for('report_lost') }}" class="btn btn-outline-danger">报告丢失物品</a>
+                </div>
+                {% if lost_items %}
+                <div class="row">
+                    {% for item in lost_items %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 {% if item.matched == 1 %}border-secondary bg-light{% endif %}">
+                            {% if item.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + item.image) }}" class="card-img-top" alt="物品图片" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <span class="text-muted">无图片</span>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">丢失地点: {{ item.location }}</h5>
+                                <p class="card-text">{{ item.description[:50] }}{% if item.description|length > 50 %}...{% endif %}</p>
+                                <p class="card-text"><small class="text-muted">报告人: {{ item.name_cn }} ({{ item.name_en }})</small></p>
+                                <p class="card-text"><small class="text-muted">时间: {{ item.created_at[:16].replace('T', ' ') }}</small></p>
+                                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-sm btn-primary">查看详情</a>
+                                {% if item.matched == 1 %}
+                                <span class="badge bg-secondary ms-2">已匹配</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">目前没有丢失物品报告</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">找到物品</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-end mb-3">
+                    <a href="{{ url_for('report_found') }}" class="btn btn-outline-success">报告找到物品</a>
+                </div>
+                {% if found_items %}
+                <div class="row">
+                    {% for item in found_items %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 {% if item.matched == 1 %}border-secondary bg-light{% endif %}">
+                            {% if item.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + item.image) }}" class="card-img-top" alt="物品图片" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <span class="text-muted">无图片</span>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">找到地点: {{ item.location }}</h5>
+                                <p class="card-text">{{ item.description[:50] }}{% if item.description|length > 50 %}...{% endif %}</p>
+                                <p class="card-text"><small class="text-muted">报告人: {{ item.name_cn }} ({{ item.name_en }})</small></p>
+                                <p class="card-text"><small class="text-muted">时间: {{ item.created_at[:16].replace('T', ' ') }}</small></p>
+                                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-sm btn-primary">查看详情</a>
+                                {% if item.matched == 1 %}
+                                <span class="badge bg-secondary ms-2">已匹配</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">目前没有找到物品报告</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
