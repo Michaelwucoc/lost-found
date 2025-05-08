@@ -44,7 +44,7 @@ jobs:
         # 等待应用启动
         sleep 5
         # 检查应用是否响应
-        curl http://127.0.0.1:5051/ || exit 1
+        curl http://127.0.0.1:5001/ || exit 1
         # 关闭应用
         kill %1
 
