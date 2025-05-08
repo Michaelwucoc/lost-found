@@ -1,0 +1,59 @@
+name: Code Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Initialize database
+      run: |
+        python init_db.py
+
+    - name: Create environment file
+      run: |
+        cp .env.example .env
+        echo "SECRET_KEY=test-secret-key" >> .env
+        echo "ADMIN_USERNAME=admin" >> .env
+        echo "ADMIN_PASSWORD=test-password" >> .env
+
+    - name: Verify application startup
+      run: |
+        # 启动应用在后台
+        python app.py &
+        # 等待应用启动
+        sleep 5
+        # 检查应用是否响应
+        curl http://localhost:5051/ || exit 1
+        # 关闭应用
+        kill %1
+
+    - name: Run basic tests
+      run: |
+        # 确保上传目录存在
+        mkdir -p static/uploads
+        # 验证数据库创建
+        test -f database.db || exit 1
+        # 验证必要的目录存在
+        test -d templates || exit 1
+        test -d static || exit 1
